@@ -53,7 +53,6 @@ export default class Map extends Component {
                 this.setState({ api: res.data }) 
                 // Once the all API's has finished loading, initialize the map
                 this.getGoogleMaps().then((google) => {
-                    // debugger
                     const london = {lat: 52.00, lng: 0.00}
                     const map = new google.maps.Map(document.getElementById('map'), {
                         zoom: 3,
@@ -71,7 +70,11 @@ export default class Map extends Component {
                         const infoWindow = new google.maps.InfoWindow({
                             content: el.name
                         })
-                        marker.addListener('click', () => infoWindow.open(map, marker))
+                        marker.addListener('click', () => {
+                            map.setZoom(5)
+                            map.panTo(marker.position);
+                            infoWindow.open(map, marker)
+                        })
                         return marker
                     })
                     this.setState({markers})
