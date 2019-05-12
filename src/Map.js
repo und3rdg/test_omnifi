@@ -44,7 +44,6 @@ export default class Map extends Component {
                 return res
             })
             .then(res => {
-                console.log(res.data)
                 this.setState({ markers: res.data })
             })
             .catch(function(error) {
@@ -62,15 +61,18 @@ export default class Map extends Component {
         this.getGoogleMaps().then((google) => {
             const london = {lat: 52.00, lng: 0.00}
             const map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 1,
+                zoom: 3,
                 center: london
             })
 
-            // eslint-disable-next-line
-            const marker = new google.maps.Marker({
-                position: london,
-                map: map
+            const markers = this.state.markers.map(el => {
+                console.log(el.longitude)
+                return new google.maps.Marker({
+                    position: {lat: el.latitude, lng: el.longitude},
+                    map: map
+                })
             })
+            console.log(markers[0])
         })
     }
 
