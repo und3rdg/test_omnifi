@@ -1,68 +1,34 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# The Task
 
-## Available Scripts
+We would like you to create a simple web application in the framework of your choice. The function of this app is to pull a feed of locations from an endpoint and show them as pins on a maps integration of your choosing.
 
-In the project directory, you can run:
+Please note: We’d recommend a maximum of 4 hours on the task, even if it is not complete.  Code quality and structure is more important than a finished but rushed project - in particular, aim to follow the best practices of the particular coding libraries you are utilising.
 
-### `npm start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Requirements:
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+* Web application to run in Google Chrome on desktop and Safari on mobile
+* Application loads the map data from an external endpoint (provided below)
+* The app must display a map with a pin for each location in the remote JSON feed using latitude and longitude from the feed.
+* Once a pin is tapped the popup should show the country name from the feed.
+* You are allowed to use any 3rd party libraries you prefer to help carry out the task - please look to follow best practices around any 3rd party libraries you utilise
+* If you want to use Google Maps for the integrations, use the API key ***************************************
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Stretch goal
 
-### `npm run build`
+* Provide a list of the pins separately within the app
+* Allow the user to click on an item in the feed, centre the map and open the popup for that location
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## Assets
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The location feed is available at: https://************.amazonaws.com/****************/locations.json
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Submission
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Share in a method that is convenient - ideally using Github or a different version control provider - aim to commit often and follow best practices around usage of this.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Thanks and good luck!
