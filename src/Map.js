@@ -56,23 +56,29 @@ export default class Map extends Component {
     }
 
     componentDidMount() {
-
         // Once the Google Maps API has finished loading, initialize the map
         this.getGoogleMaps().then((google) => {
+            // debugger
             const london = {lat: 52.00, lng: 0.00}
             const map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 3,
                 center: london
             })
 
+            // loop true json data and set every marker separately
+            // save it for later use
             const markers = this.state.markers.map(el => {
-                console.log(el.longitude)
-                return new google.maps.Marker({
+                const marker = new google.maps.Marker({
                     position: {lat: el.latitude, lng: el.longitude},
                     map: map
                 })
+                const infoWindow = new google.maps.InfoWindow({
+                    content: el.name
+                })
+                marker.addListener('click', () => infoWindow.open(map, marker))
+                return marker
             })
-            console.log(markers[0])
+            // console.log(markers[0])
         })
     }
 
