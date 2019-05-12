@@ -1,5 +1,6 @@
-/* global google */
+/* global google:false */
 import React, {Component} from 'react'
+import axios from 'axios'
 
 export default class Map extends Component {
     constructor(props){
@@ -42,6 +43,20 @@ export default class Map extends Component {
     }
 
     componentDidMount() {
+        const workaoundForCorsSettingsOnServer = 'https://cors-anywhere.herokuapp.com/'
+        axios(`${workaoundForCorsSettingsOnServer}https://s3-eu-west-1.amazonaws.com/omnifi/techtests/locations.json`)
+            .then(function(response) {
+                return response
+            })
+            .then(function(res) {
+                console.log(res.data)
+            })
+            .catch(function(error) {
+                console.error('Request failed', error)
+            })
+
+
+
         // Once the Google Maps API has finished loading, initialize the map
         this.getGoogleMaps().then((google) => {
             const coordinates = {lat: 52.00, lng: 0.00}
@@ -49,6 +64,8 @@ export default class Map extends Component {
                 zoom: 4,
                 center: coordinates
             })
+
+            // eslint-disable-next-line
             const marker = new google.maps.Marker({
                 position: coordinates,
                 map: map
