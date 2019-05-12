@@ -38,36 +38,37 @@ export default class Map extends Component {
 
 
     componentWillMount() {
-        // Start Google Maps API loading since we know we'll soon need it
-        this.getGoogleMaps()
-    }
-
-    componentDidMount() {
         const workaoundForCorsSettingsOnServer = 'https://cors-anywhere.herokuapp.com/'
         axios(`${workaoundForCorsSettingsOnServer}https://s3-eu-west-1.amazonaws.com/omnifi/techtests/locations.json`)
-            .then(function(response) {
-                return response
+            .then(res => {
+                return res
             })
-            .then(function(res) {
+            .then(res => {
                 console.log(res.data)
+                this.setState({ markers: res.data })
             })
             .catch(function(error) {
                 console.error('Request failed', error)
             })
 
 
+        // Start Google Maps API loading since we know we'll soon need it
+        this.getGoogleMaps()
+    }
+
+    componentDidMount() {
 
         // Once the Google Maps API has finished loading, initialize the map
         this.getGoogleMaps().then((google) => {
-            const coordinates = {lat: 52.00, lng: 0.00}
+            const london = {lat: 52.00, lng: 0.00}
             const map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 4,
-                center: coordinates
+                zoom: 1,
+                center: london
             })
 
             // eslint-disable-next-line
             const marker = new google.maps.Marker({
-                position: coordinates,
+                position: london,
                 map: map
             })
         })
