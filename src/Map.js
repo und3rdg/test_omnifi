@@ -116,9 +116,14 @@ function Feed (props) {
             cursor: "pointer",
         },
     }
+
+    const handler_click = (id) => {
+        google.maps.event.trigger(markers[id], 'click')
+    }
+
     return (
         <ul>
-            {markers && markers.map(marker => <li style={css.li}>{marker.title}</li>)}
+            {markers && markers.map((marker, idx) => <li style={css.li} onClick={handler_click.bind(null, idx)}>{marker.title}</li>)}
         </ul>
     )
 }
