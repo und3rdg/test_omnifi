@@ -1,3 +1,4 @@
+/* global google */
 import React, {Component} from 'react'
 
 export default class Map extends Component {
@@ -7,19 +8,65 @@ export default class Map extends Component {
         }
     }
 
-    API_KEY = 'AIzaSyCwO_zeKZ9hDaXiP-ZM_rrSC21X_0KoPe8'
-    api_url = (API_KEY) => `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap`
+
+    getGoogleMaps() {
+        // If we haven't already defined the promise, define it
+        if (!this.googleMapsPromise) {
+            this.googleMapsPromise = new Promise((resolve) => {
+                // Add a global handler for when the API finishes loading
+                window.resolveGoogleMapsPromise = () => {
+                    // Resolve the promise
+                    resolve(google)
+
+                    // Tidy up
+                    delete window.resolveGoogleMapsPromise
+                }
+
+                // Load the Google Maps API
+                const script = document.createElement("script")
+                const API = 'AIzaSyDbAz1XXxDoKSU2nZXec89rcHPxgkvVoiw'
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${API}&callback=resolveGoogleMapsPromise`
+                script.async = true
+                document.body.appendChild(script)
+            })
+        }
+
+        // Return a promise for the Google Maps API
+        return this.googleMapsPromise
+    }
+
+
+    componentWillMount() {
+        // Start Google Maps API loading since we know we'll soon need it
+        this.getGoogleMaps()
+    }
+
+    componentDidMount() {
+        // Once the Google Maps API has finished loading, initialize the map
+        this.getGoogleMaps().then((google) => {
+            const coordinates = {lat: 52.00, lng: 0.00}
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 4,
+                center: coordinates
+            })
+            const marker = new google.maps.Marker({
+                position: coordinates,
+                map: map
+            })
+        })
+    }
+
+
 
     render() {
         const style = {
-            height: "100%",
-            width: "100%",
+            height: "500px",
+            width: "500px",
+            border: "2px solid black",
         }
 
         return (
-            <div id="map" style={style}>
-                <script src={this.api_url(this.API_KEY)} async defer></script>
-            </div>
+            <div id="map" style={style}></div>
         )
     }
 }
