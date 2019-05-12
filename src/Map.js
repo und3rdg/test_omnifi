@@ -10,7 +10,7 @@ export default class Map extends Component {
     }
 
 
-    getGoogleMaps() {
+    async getGoogleMaps() {
         // If we haven't already defined the promise, define it
         if (!this.googleMapsPromise) {
             this.googleMapsPromise = new Promise((resolve) => {
@@ -36,50 +36,50 @@ export default class Map extends Component {
         return this.googleMapsPromise
     }
 
+    getMarkersJson () {
+    }
 
     componentWillMount() {
+        // Start both API's loading since we know we'll soon need it
+        this.getGoogleMaps()
+    }
+
+    componentDidMount() {
         const workaoundForCorsSettingsOnServer = 'https://cors-anywhere.herokuapp.com/'
         axios(`${workaoundForCorsSettingsOnServer}https://s3-eu-west-1.amazonaws.com/omnifi/techtests/locations.json`)
             .then(res => {
                 return res
             })
             .then(res => {
-                this.setState({ markers: res.data })
-            })
+                this.setState({ markers: res.data }) 
+                // Once the all API's has finished loading, initialize the map
+                this.getGoogleMaps().then((google) => {
+                    // debugger
+                    const london = {lat: 52.00, lng: 0.00}
+                    const map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 3,
+                        center: london
+                    })
+
+                    // loop true json data and set every marker separately
+                    // save it for later use
+                    const markers = this.state.markers && this.state.markers.map(el => {
+                        const marker = new google.maps.Marker({
+                            position: {lat: el.latitude, lng: el.longitude},
+                            map: map
+                        })
+                        const infoWindow = new google.maps.InfoWindow({
+                            content: el.name
+                        })
+                        marker.addListener('click', () => infoWindow.open(map, marker))
+                        return marker
+                    })
+                    // console.log(markers[0])
+                })
+            }).then(res=>console.log('ddd'))
             .catch(function(error) {
                 console.error('Request failed', error)
             })
-
-
-        // Start Google Maps API loading since we know we'll soon need it
-        this.getGoogleMaps()
-    }
-
-    componentDidMount() {
-        // Once the Google Maps API has finished loading, initialize the map
-        this.getGoogleMaps().then((google) => {
-            // debugger
-            const london = {lat: 52.00, lng: 0.00}
-            const map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 3,
-                center: london
-            })
-
-            // loop true json data and set every marker separately
-            // save it for later use
-            const markers = this.state.markers.map(el => {
-                const marker = new google.maps.Marker({
-                    position: {lat: el.latitude, lng: el.longitude},
-                    map: map
-                })
-                const infoWindow = new google.maps.InfoWindow({
-                    content: el.name
-                })
-                marker.addListener('click', () => infoWindow.open(map, marker))
-                return marker
-            })
-            // console.log(markers[0])
-        })
     }
 
 
