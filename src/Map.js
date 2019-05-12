@@ -8,7 +8,8 @@ export default class Map extends Component {
         super()
         this.state = {
             api: [],
-            markers: []
+            markers: [],
+            lastOpen: '',
         }
     }
 
@@ -40,6 +41,10 @@ export default class Map extends Component {
         map.setZoom(5)
         map.panTo(marker.position);
         infoWindow.open(map, marker)
+
+        // always close last opened tooltip
+        this.state.lastOpen && this.state.lastOpen.close()
+        this.setState({lastOpen: infoWindow})
     }
 
     componentWillMount() {
@@ -77,7 +82,7 @@ export default class Map extends Component {
                         const infoWindow = new google.maps.InfoWindow({
                             content: el.name
                         })
-                        marker.addListener('click', this.handler_click_marker.bind(null, map, infoWindow, marker))
+                        marker.addListener('click', this.handler_click_marker.bind(this, map, infoWindow, marker))
                         return marker
                     })
                     this.setState({markers})
