@@ -6,11 +6,13 @@ export default class Map extends Component {
     constructor(props){
         super(props)
         this.state = {
+            api: [],
+            markers: []
         }
     }
 
 
-    async getGoogleMaps() {
+    getGoogleMaps() {
         // If we haven't already defined the promise, define it
         if (!this.googleMapsPromise) {
             this.googleMapsPromise = new Promise((resolve) => {
@@ -36,9 +38,6 @@ export default class Map extends Component {
         return this.googleMapsPromise
     }
 
-    getMarkersJson () {
-    }
-
     componentWillMount() {
         // Start both API's loading since we know we'll soon need it
         this.getGoogleMaps()
@@ -51,7 +50,7 @@ export default class Map extends Component {
                 return res
             })
             .then(res => {
-                this.setState({ markers: res.data }) 
+                this.setState({ api: res.data }) 
                 // Once the all API's has finished loading, initialize the map
                 this.getGoogleMaps().then((google) => {
                     // debugger
@@ -63,10 +62,11 @@ export default class Map extends Component {
 
                     // loop true json data and set every marker separately
                     // save it for later use
-                    const markers = this.state.markers && this.state.markers.map(el => {
+                    const markers = this.state.api && this.state.api.map(el => {
                         const marker = new google.maps.Marker({
                             position: {lat: el.latitude, lng: el.longitude},
-                            map: map
+                            map: map,
+                            title: el.name
                         })
                         const infoWindow = new google.maps.InfoWindow({
                             content: el.name
@@ -74,9 +74,9 @@ export default class Map extends Component {
                         marker.addListener('click', () => infoWindow.open(map, marker))
                         return marker
                     })
-                    // console.log(markers[0])
+                    this.setState({markers})
                 })
-            }).then(res=>console.log('ddd'))
+            })
             .catch(function(error) {
                 console.error('Request failed', error)
             })
@@ -86,14 +86,39 @@ export default class Map extends Component {
 
     render() {
         const style = {
-            height: "500px",
-            width: "500px",
-            border: "2px solid black",
+            container: {
+                display: "flex",
+            },
+            map: {
+                height: "500px",
+                width: "500px",
+                border: "2px solid black",
+            },
+            feed: {
+            }
         }
 
+        const {markers, api} = this.state
+        console.log(markers[0] && markers[0].title)
         return (
-            <div id="map" style={style}></div>
+            <div id="Container" style={style.container}>
+                <div id="map" style={style.map}></div>
+                <Feed markers={markers} />
+            </div>
         )
     }
 }
 
+function Feed (props) {
+    const {markers} = props
+    const css ={
+        li: {
+            cursor: "pointer",
+        },
+    }
+    return (
+        <ul>
+            {markers && markers.map(marker => <li style={css.li}>{marker.title}</li>)}
+        </ul>
+    )
+}
