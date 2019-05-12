@@ -1,12 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Map from './Map.js'
+import * as serviceWorker from './serviceWorker'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const id_name = 'g_map'
+const root = document.getElementById(id_name)
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+function init() {
+    if(!root) {
+        console.warn(`Container id="${id_name}" not found`)
+        return
+    } 
+
+
+    ReactDOM.render(<Map />, root)
+    serviceWorker.unregister()
+}
+
+init()
