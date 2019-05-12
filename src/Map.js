@@ -2,9 +2,10 @@
 import React, {Component} from 'react'
 import axios from 'axios'
 
+import Feed from './Feed'
 export default class Map extends Component {
-    constructor(props){
-        super(props)
+    constructor(){
+        super()
         this.state = {
             api: [],
             markers: []
@@ -18,9 +19,7 @@ export default class Map extends Component {
             this.googleMapsPromise = new Promise((resolve) => {
                 // Add a global handler for when the API finishes loading
                 window.resolveGoogleMapsPromise = () => {
-                    // Resolve the promise
                     resolve(google)
-
                     // Tidy up
                     delete window.resolveGoogleMapsPromise
                 }
@@ -33,18 +32,26 @@ export default class Map extends Component {
                 document.body.appendChild(script)
             })
         }
-
         // Return a promise for the Google Maps API
         return this.googleMapsPromise
     }
 
+    handler_click_marker = (map, infoWindow, marker) => {
+        map.setZoom(5)
+        map.panTo(marker.position);
+        infoWindow.open(map, marker)
+    }
+
     componentWillMount() {
-        // Start both API's loading since we know we'll soon need it
+        // Start google API's loading since we know we'll soon need it
         this.getGoogleMaps()
     }
 
     componentDidMount() {
+        // dirty temporary solution for common problem with cors origin
         const workaoundForCorsSettingsOnServer = 'https://cors-anywhere.herokuapp.com/'
+
+        // get data from API with coordinates and place names
         axios(`${workaoundForCorsSettingsOnServer}https://s3-eu-west-1.amazonaws.com/omnifi/techtests/locations.json`)
             .then(res => {
                 return res
@@ -70,11 +77,7 @@ export default class Map extends Component {
                         const infoWindow = new google.maps.InfoWindow({
                             content: el.name
                         })
-                        marker.addListener('click', () => {
-                            map.setZoom(5)
-                            map.panTo(marker.position);
-                            infoWindow.open(map, marker)
-                        })
+                        marker.addListener('click', this.handler_click_marker.bind(null, map, infoWindow, marker))
                         return marker
                     })
                     this.setState({markers})
@@ -89,20 +92,14 @@ export default class Map extends Component {
 
     render() {
         const style = {
-            container: {
-                display: "flex",
-            },
+            container: { display: "flex", },
             map: {
                 height: "500px",
                 width: "500px",
-                border: "2px solid black",
             },
-            feed: {
-            }
         }
 
-        const {markers, api} = this.state
-        console.log(markers[0] && markers[0].title)
+        const {markers} = this.state
         return (
             <div id="Container" style={style.container}>
                 <div id="map" style={style.map}></div>
@@ -112,21 +109,3 @@ export default class Map extends Component {
     }
 }
 
-function Feed (props) {
-    const {markers} = props
-    const css ={
-        li: {
-            cursor: "pointer",
-        },
-    }
-
-    const handler_click = (id) => {
-        google.maps.event.trigger(markers[id], 'click')
-    }
-
-    return (
-        <ul>
-            {markers && markers.map((marker, idx) => <li style={css.li} onClick={handler_click.bind(null, idx)}>{marker.title}</li>)}
-        </ul>
-    )
-}
